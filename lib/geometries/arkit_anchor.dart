@@ -138,6 +138,7 @@ class ARKitFaceAnchor extends ARKitAnchor {
     Matrix4 transform,
     this.leftEyeTransform,
     this.rightEyeTransform,
+    this.lookAtPoint,
   ) : super(
           nodeName,
           identifier,
@@ -154,6 +155,10 @@ class ARKitFaceAnchor extends ARKitAnchor {
   /// The right eye’s rotation and translation relative to the anchor’s origin.
   @MatrixConverter()
   final Matrix4 rightEyeTransform;
+
+  ///
+  @Vector3Converter()
+  final Vector3 lookAtPoint;
 
   /// A dictionary of blend shape coefficients for each blend shape location.
   /// Blend shapes coefficients define the amount of displacement of a neutral shape at a specific location on the face.
