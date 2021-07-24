@@ -91,7 +91,7 @@ Map<String, dynamic> _$ARKitImageAnchorToJson(ARKitImageAnchor instance) {
 
 ARKitFaceAnchor _$ARKitFaceAnchorFromJson(Map<String, dynamic> json) {
   return ARKitFaceAnchor(
-    ARKitFace.fromJson(json['geometry'] as Map<String, dynamic>),
+    ARKitFace.fromJson(json['geometry'] as Map<String, dynamic>?),
     Map<String, double>.from(json['blendShapes'] as Map),
     json['isTracked'] as bool,
     json['nodeName'] as String?,
