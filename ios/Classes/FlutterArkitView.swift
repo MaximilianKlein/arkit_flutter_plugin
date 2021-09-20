@@ -7,6 +7,9 @@ class FlutterArkitView: NSObject, FlutterPlatformView {
     
     var forceTapOnCenter: Bool = false
     var configuration: ARConfiguration? = nil
+
+    var device: Device? = nil
+    var face: Face? = nil
     
     init(withFrame frame: CGRect, viewIdentifier viewId: Int64, messenger msg: FlutterBinaryMessenger) {
         self.sceneView = ARSCNView(frame: frame)
@@ -16,6 +19,14 @@ class FlutterArkitView: NSObject, FlutterPlatformView {
         
         self.sceneView.delegate = self
         self.channel.setMethodCallHandler(self.onMethodCalled)
+
+        let face = Face()
+        self.sceneView.scene.rootNode.addChildNode(face.node)
+        self.face = face
+
+        let device = Device(type: .iPad)
+        self.sceneView.scene.rootNode.addChildNode(device.node)
+        self.device = device
     }
     
     func view() -> UIView { return sceneView }

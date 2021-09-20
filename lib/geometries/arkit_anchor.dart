@@ -139,6 +139,7 @@ class ARKitFaceAnchor extends ARKitAnchor {
     this.leftEyeTransform,
     this.rightEyeTransform,
     this.lookAtPoint,
+    this.lookAtDevicePoint,
   ) : super(
           nodeName,
           identifier,
@@ -159,6 +160,11 @@ class ARKitFaceAnchor extends ARKitAnchor {
   ///
   @Vector3Converter()
   final Vector3 lookAtPoint;
+
+
+  /// point on the device the user is looking at
+  @Vector2Converter()
+  final Vector2 lookAtDevicePoint;
 
   /// A dictionary of blend shape coefficients for each blend shape location.
   /// Blend shapes coefficients define the amount of displacement of a neutral shape at a specific location on the face.

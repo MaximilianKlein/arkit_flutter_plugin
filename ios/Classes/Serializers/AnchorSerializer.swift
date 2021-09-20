@@ -1,7 +1,7 @@
 import Foundation
 import ARKit
 
-func serializeAnchor(_ anchor: ARAnchor) -> Dictionary<String, Any> {
+func serializeAnchor(_ anchor: ARAnchor, _ device: Device? = nil, _ face: Face? = nil) -> Dictionary<String, Any> {
     var params = [
         "identifier": anchor.identifier.uuidString,
         "transform": serializeMatrix(anchor.transform)
@@ -20,7 +20,7 @@ func serializeAnchor(_ anchor: ARAnchor) -> Dictionary<String, Any> {
     #if !DISABLE_TRUEDEPTH_API
     if #available(iOS 12.0, *) {
         if let faceAnchor = anchor as? ARFaceAnchor {
-            params = serializeFaceAnchor(faceAnchor, params)
+            params = serializeFaceAnchor(faceAnchor, device, face, params)
         }
     }
     #endif
@@ -57,17 +57,35 @@ fileprivate func serializeImageAnchor(_ anchor: ARImageAnchor, _ params:[String 
 
 #if !DISABLE_TRUEDEPTH_API
 @available(iOS 12.0, *)
-fileprivate func serializeFaceAnchor(_ anchor: ARFaceAnchor, _ params:[String : Any]) -> [String : Any]{
+fileprivate func serializeFaceAnchor(_ anchor: ARFaceAnchor, _ device: Device? = nil, _ face: Face? = nil, _ params:[String : Any]) -> [String : Any]{
     var params = params
     params["anchorType"] = "faceAnchor"
     params["isTracked"] = anchor.isTracked
     params["leftEyeTransform"] = serializeMatrix(anchor.leftEyeTransform)
     params["rightEyeTransform"] = serializeMatrix(anchor.rightEyeTransform)
     params["lookAtPoint"] = serializeArray(anchor.lookAtPoint)
+    if (face != nil && device != nil) {
+        face!.update(anchor: anchor)
+        params["lookAtDevicePoint"] = serializeArray(updateLookAtPosition(anchor.lookAtPoint, face!, device!))
+    }
     params["blendShapes"] = anchor.blendShapes
     return params
 }
 #endif
+
+
+fileprivate var smoothingRange: Int = 1
+fileprivate var bufferLookAtPosition: [CGPoint] = []
+
+fileprivate func updateLookAtPosition(_ lookAtPoint: simd_float3, _ face: Face, _ device: Device) -> simd_float2 {
+    let rightEyeHittingAt = face.rightEye.hittingAt(device: device)
+    let leftEyeHittingAt = face.leftEye.hittingAt(device: device)
+    let lookAt = CGPoint(x: (rightEyeHittingAt.x + leftEyeHittingAt.x) / 2, y: -(rightEyeHittingAt.y + leftEyeHittingAt.y) / 2)
+    bufferLookAtPosition.append(lookAt)
+    let lookAtPosition = Array(bufferLookAtPosition.suffix(smoothingRange)).average!
+    let lookAtPoint = simd_float2(x: Float(lookAtPosition.x + device.screenPointSize.width) / 2, y: Float(lookAtPosition.y + device.screenPointSize.height) / 2)
+    return lookAtPoint
+}
 
 @available(iOS 13.0, *)
 fileprivate func serializeBodyAnchor(_ anchor: ARBodyAnchor, _ params:[String : Any]) -> [String : Any]{

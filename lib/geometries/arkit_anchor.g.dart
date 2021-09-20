@@ -100,6 +100,7 @@ ARKitFaceAnchor _$ARKitFaceAnchorFromJson(Map<String, dynamic> json) {
     const MatrixConverter().fromJson(json['leftEyeTransform'] as List),
     const MatrixConverter().fromJson(json['rightEyeTransform'] as List),
     const Vector3Converter().fromJson(json['lookAtPoint'] as List),
+    const Vector2Converter().fromJson(json['lookAtDevicePoint'] as List),
   );
 }
 
