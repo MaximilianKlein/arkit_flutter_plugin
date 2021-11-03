@@ -26,6 +26,7 @@ public class SwiftArkitPlugin: NSObject, FlutterPlugin {
     
 }
 
+@available(iOS 13.0, *)
 class FlutterArkitFactory :NSObject, FlutterPlatformViewFactory {
     let messenger: FlutterBinaryMessenger
     

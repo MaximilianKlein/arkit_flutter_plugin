@@ -318,6 +318,18 @@ class ARKitController {
     return _channel.invokeMethod('addARKitNode', params);
   }
 
+  Future<void> record({String? videoUrl}) {
+    if (videoUrl != null) {
+      return _channel.invokeMethod('recordStart', {'videoUrl': videoUrl});
+    } else {
+      return _channel.invokeMethod('recordStart');
+    }
+  }
+
+  Future<void> stopRecording() {
+    return _channel.invokeMethod('recordStop');
+  }
+
   Future<void> update(
     String nodeName, {
     ARKitNode? node,

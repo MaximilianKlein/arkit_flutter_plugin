@@ -1,6 +1,7 @@
 import Foundation
 import ARKit
 
+@available(iOS 13.0, *)
 class FlutterArkitView: NSObject, FlutterPlatformView {
     let sceneView: ARSCNView
     let channel: FlutterMethodChannel
@@ -10,12 +11,16 @@ class FlutterArkitView: NSObject, FlutterPlatformView {
 
     var device: Device? = nil
     var face: Face? = nil
+
+    var capture: ARCapture?
     
     init(withFrame frame: CGRect, viewIdentifier viewId: Int64, messenger msg: FlutterBinaryMessenger) {
         self.sceneView = ARSCNView(frame: frame)
         self.channel = FlutterMethodChannel(name: "arkit_\(viewId)", binaryMessenger: msg)
         
         super.init()
+
+        self.capture = ARCapture(view: sceneView)
         
         self.sceneView.delegate = self
         self.channel.setMethodCallHandler(self.onMethodCalled)
@@ -31,6 +36,8 @@ class FlutterArkitView: NSObject, FlutterPlatformView {
     
     func view() -> UIView { return sceneView }
     
+    var recording: Bool = false
+
     func onMethodCalled(_ call :FlutterMethodCall, _ result:FlutterResult) {
         let arguments = call.arguments as? Dictionary<String, Any>
         
@@ -44,6 +51,28 @@ class FlutterArkitView: NSObject, FlutterPlatformView {
         case "init":
             initalize(arguments!, result)
             result(nil)
+            break
+        case "recordStart":
+            if recording {
+                capture?.stop({ (status) in
+                    print("Video exported: \(status)")
+                })
+            }
+            print("stopping capture \(capture)")
+            capture?.start()
+            if let args = arguments {
+                if let videoUrl = args["videoUrl"] as? string {
+                    capture?.videoUrl = URL(string: videoUrl)
+                }
+            }
+            recording = true;
+            break
+        case "recordStop":
+            print("stopping capture \(capture)")
+            capture?.stop({ (status) in
+                print("Video exported: \(status)")
+            })
+            recording = false
             break
         case "addARKitNode":
             onAddNode(arguments!)
@@ -126,7 +155,6 @@ class FlutterArkitView: NSObject, FlutterPlatformView {
     
     func onDispose(_ result:FlutterResult) {
         sceneView.session.pause()
-        self.channel.setMethodCallHandler(nil)
         result(nil)
     }
 }
