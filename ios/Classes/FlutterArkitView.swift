@@ -61,7 +61,7 @@ class FlutterArkitView: NSObject, FlutterPlatformView {
             print("stopping capture \(capture)")
             capture?.start()
             if let args = arguments {
-                if let videoUrl = args["videoUrl"] as? string {
+                if let videoUrl = args["videoUrl"] as? String {
                     capture?.videoUrl = URL(string: videoUrl)
                 }
             }

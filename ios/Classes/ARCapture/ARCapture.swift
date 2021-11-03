@@ -58,7 +58,7 @@ open class ARCapture {
     private var needToPause: Bool = false
     private var lastPauseTime: CMTime?
     private var summaryDelay: CMTime?
-    private var videoUrl: URL?
+    var videoUrl: URL?
     
     public init?(view: ARSCNView) {
         self.view = view
