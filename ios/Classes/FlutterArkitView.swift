@@ -38,7 +38,7 @@ class FlutterArkitView: NSObject, FlutterPlatformView {
     
     var recording: Bool = false
 
-    func onMethodCalled(_ call :FlutterMethodCall, _ result:FlutterResult) {
+    func onMethodCalled(_ call :FlutterMethodCall, _ result:@escaping FlutterResult) {
         let arguments = call.arguments as? Dictionary<String, Any>
         
         if configuration == nil && call.method != "init" {
@@ -71,6 +71,7 @@ class FlutterArkitView: NSObject, FlutterPlatformView {
             print("stopping capture \(capture)")
             capture?.stop({ (status) in
                 print("Video exported: \(status)")
+                result(self.capture?.videoUrl?.absoluteString)
             })
             recording = false
             break

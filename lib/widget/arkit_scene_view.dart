@@ -326,8 +326,8 @@ class ARKitController {
     }
   }
 
-  Future<void> stopRecording() {
-    return _channel.invokeMethod('recordStop');
+  Future<String> stopRecording() async {
+    return (await _channel.invokeMethod('recordStop')) as String;
   }
 
   Future<void> update(
