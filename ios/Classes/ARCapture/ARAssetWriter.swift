@@ -1,3 +1,4 @@
+/// Taken from https://gitlab.com/seriyvolk83/arcapture (MIT License)
 //
 //  ARAssetCreator.swift
 //  ARCapture framework

@@ -1,3 +1,4 @@
+/// Taken from https://gitlab.com/seriyvolk83/arcapture (MIT License)
 //
 //  ARCapture.swift
 //  ARCapture framework
@@ -58,6 +59,7 @@ open class ARCapture {
     private var needToPause: Bool = false
     private var lastPauseTime: CMTime?
     private var summaryDelay: CMTime?
+    /// Changed to make videoURL available
     var videoUrl: URL?
     
     public init?(view: ARSCNView) {
